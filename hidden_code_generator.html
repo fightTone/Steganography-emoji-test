@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Emoji Code Generator</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            margin: 0;
+        }
+        .section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        textarea {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #555;
+            padding: 10px;
+            width: 95%;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+        button {
+            background: #444;
+            color: #00ff00;
+            border: 1px solid #666;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 5px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #555;
+        }
+        .result {
+            background: #0a0a0a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #333;
+            word-break: break-all;
+            font-size: 18px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        pre {
+            color: #88ff88;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🕵️ Emoji Code Generator</h1>
+    <p>Create HTML that looks like emojis but actually runs code!</p>
+    
+    <div class="section">
+        <h2>📝 Step 1: Enter Your Code</h2>
+        <textarea id="sourceCode" rows="12"><!DOCTYPE html>
+<html>
+<head><title>Hello World</title></head>
+<body style="font-family:Arial;padding:20px;text-align:center;background:#f0f8ff;">
+<h1>👋 Hello World!</h1>
+<input type="text" id="nameInput" placeholder="Enter your name" style="padding:10px;font-size:16px;">
+<br><br>
+<button onclick="sayHello()" style="padding:10px 20px;font-size:16px;background:#4CAF50;color:white;border:none;cursor:pointer;">Say Hello</button>
+<div id="greeting" style="margin-top:20px;font-size:20px;"></div>
+<script>
+function sayHello() {
+    var name = document.getElementById('nameInput').value || 'World';
+    document.getElementById('greeting').innerHTML = 'Hello ' + name + '! 🎉';
+}
+</script>
+</body>
+</html></textarea>
+        <br>
+        <button onclick="handleEncode()">🔐 Convert to Emoji Format</button>
+    </div>
+
+    <div class="section">
+        <h2>😊 Step 2: Emoji-Hidden Result</h2>
+        <div id="emojiResult" class="result">Click "Convert to Emoji Format" above...</div>
+        <button onclick="handleDownload()" id="downloadBtn" class="hidden">📥 Download Emoji HTML File</button>
+        <button onclick="handleTest()" id="testBtn" class="hidden">🧪 Test in New Window</button>
+    </div>
+
+    <div class="section">
+        <h2>🔍 Step 3: Test Decoder</h2>
+        <textarea id="testInput" rows="4" placeholder="Paste emoji HTML here to decode..."></textarea>
+        <br>
+        <button onclick="handleDecode()">🔬 Decode & Show</button>
+        <div id="decodeResult" class="result"></div>
+    </div>
+
+    <script>
+    console.log('Script starting to load...');
+
+    // Global variables
+    var encodedData = '';
+
+    // Encoding functions
+    function textToBinary(text) {
+        var binary = '';
+        for (var i = 0; i < text.length; i++) {
+            binary += text.charCodeAt(i).toString(2).padStart(8, '0');
+        }
+        return binary;
+    }
+
+    function binaryToZeroWidth(binary) {
+        var result = '';
+        for (var i = 0; i < binary.length; i++) {
+            var bit = binary[i];
+            result += (bit === '1') ? '\u200B' : '\u200C';
+        }
+        return result;
+    }
+
+    function zeroWidthToBinary(text) {
+        var binary = '';
+        for (var i = 0; i < text.length; i++) {
+            var char = text[i];
+            if (char === '\u200B') binary += '1';
+            else if (char === '\u200C') binary += '0';
+        }
+        return binary;
+    }
+
+    function binaryToText(binary) {
+        var result = '';
+        for (var i = 0; i < binary.length; i += 8) {
+            var byte = binary.substr(i, 8);
+            if (byte.length === 8) {
+                result += String.fromCharCode(parseInt(byte, 2));
+            }
+        }
+        return result;
+    }
+
+    function createEmojiHTML(hiddenData) {
+        var escapedData = hiddenData.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>😊 App</title></head><body>' +
+            '<!-- 😊🎉🚀💻🎯✨🎪🎭🎨🎼🎮🎲🎸🎹🎤🎧🔮⭐🌟💫 -->' +
+            '<script>' +
+            'var hidden = "' + escapedData + '";' +
+            'var bin = "";' +
+            'for(var i = 0; i < hidden.length; i++) {' +
+            '  var c = hidden[i];' +
+            '  if(c.charCodeAt(0) === 8203) bin += "1";' +
+            '  else if(c.charCodeAt(0) === 8204) bin += "0";' +
+            '}' +
+            'var decoded = "";' +
+            'for(var j = 0; j < bin.length; j += 8) {' +
+            '  var byte = bin.substr(j, 8);' +
+            '  if(byte.length === 8) decoded += String.fromCharCode(parseInt(byte, 2));' +
+            '}' +
+            'document.write(decoded);' +
+            '</scr' + 'ipt>' +
+            '<!-- 🎭🎨🎼🎮🎲🎸🎹🎤🎧🔮⭐🌟💫🚀💻🎯✨🎪 -->' +
+            '</body></html>';
+    }
+
+    // Event handlers
+    function handleEncode() {
+        console.log('Encode button clicked!');
+        
+        var sourceCode = document.getElementById('sourceCode').value;
+        console.log('Source code length:', sourceCode.length);
+        
+        if (!sourceCode.trim()) {
+            alert('Please enter some code!');
+            return;
+        }
+
+        try {
+            console.log('Starting encoding process...');
+            var binary = textToBinary(sourceCode);
+            console.log('Binary length:', binary.length);
+            
+            var zeroWidth = binaryToZeroWidth(binary);
+            console.log('Zero-width length:', zeroWidth.length);
+            
+            // Add emoji camouflage
+            var emojis = ['😊', '🎉', '🚀', '💻', '🎯', '✨', '🎪', '🎭'];
+            var camouflaged = '';
+            
+            // Add prefix emojis
+            for (var i = 0; i < 3; i++) {
+                camouflaged += emojis[Math.floor(Math.random() * emojis.length)];
+            }
+            
+            camouflaged += zeroWidth;
+            
+            // Add suffix emojis
+            for (var i = 0; i < 3; i++) {
+                camouflaged += emojis[Math.floor(Math.random() * emojis.length)];
+            }
+
+            encodedData = camouflaged;
+            console.log('Final encoded length:', encodedData.length);
+            
+            document.getElementById('emojiResult').textContent = camouflaged;
+            document.getElementById('downloadBtn').style.display = 'inline';
+            document.getElementById('testBtn').style.display = 'inline';
+            
+            console.log('Encoding completed successfully!');
+            
+        } catch (error) {
+            console.error('Encoding error:', error);
+            alert('Encoding failed: ' + error.message);
+        }
+    }
+
+    function handleDownload() {
+        console.log('Download button clicked!');
+        
+        if (!encodedData) {
+            alert('Nothing to download!');
+            return;
+        }
+
+        try {
+            var htmlContent = createEmojiHTML(encodedData);
+            var blob = new Blob([htmlContent], { type: 'text/html' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'emoji-app.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            console.log('Download completed!');
+        } catch (error) {
+            console.error('Download error:', error);
+            alert('Download failed: ' + error.message);
+        }
+    }
+
+    function handleTest() {
+        console.log('Test button clicked!');
+        
+        if (!encodedData) {
+            alert('Nothing to test!');
+            return;
+        }
+        decodeAndShow(encodedData);
+    }
+
+    function handleDecode() {
+        console.log('Decode button clicked!');
+        
+        var input = document.getElementById('testInput').value;
+        if (!input.trim()) {
+            alert('Please paste some emoji code!');
+            return;
+        }
+        decodeAndShow(input);
+    }
+
+    function decodeAndShow(data) {
+        try {
+            console.log('Decoding data...');
+            var binary = zeroWidthToBinary(data);
+            if (!binary) {
+                document.getElementById('decodeResult').innerHTML = '<strong>No hidden data found!</strong>';
+                return;
+            }
+
+            var decoded = binaryToText(binary);
+            document.getElementById('decodeResult').innerHTML = 
+                '<strong>Decoded HTML:</strong><br><pre>' + 
+                decoded.replace(/</g, '&lt;').replace(/>/g, '&gt;') + 
+                '</pre>';
+
+            // Open in new window
+            var win = window.open('', '_blank');
+            win.document.write(decoded);
+            win.document.close();
+            
+            console.log('Decoding completed!');
+            
+        } catch (error) {
+            console.error('Decode error:', error);
+            document.getElementById('decodeResult').innerHTML = '<strong>Decode error: ' + error.message + '</strong>';
+        }
+    }
+
+    console.log('Script loaded successfully!');
+    </script>
+    </script>
+</body>
+</html>
